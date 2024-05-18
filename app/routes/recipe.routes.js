@@ -1,10 +1,17 @@
-const express = require('express');
-const router = express.Router();
 const recetasController = require('../controllers/recipe.controller');
 
-router.get('/api/recipes', recetasController.getRecipes);
-router.get('/api/recipes/by-meal-type', recetasController.getRecipesByMealType);
-router.get('/api/recipes/likeRecipe', recetasController.likeRecipe);
-router.get('/api/recipes/saveRecipe', recetasController.saveRecipe);
+module.exports = function (app) {
+    app.use(function (req, res, next) {
+        res.header(
+            "Access-Control-Allow-Headers",
+            "Origin, Content-Type, Accept"
+        );
+        next();
+    });
 
-module.exports = router;
+    app.get('/api/recipes', recetasController.getRecipes);
+    app.get('/api/recipes/bymealtype', recetasController.getRecipesByMealType);
+    app.get('/api/recipes/bycuisinetype', recetasController.getRecipesByCuisineType);
+    app.get('/api/recipes/likeRecipe', recetasController.likeRecipe);
+    app.get('/api/recipes/saveRecipe', recetasController.saveRecipe);
+};

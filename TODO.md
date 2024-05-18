@@ -3,7 +3,7 @@
 3.  Navbar centrar links y poner logo empresa
 4.  Colocar el footer del login y registro en el fondo 100vh
 5.  Ocultar validaciones registro
-6.  Implementar busqueda recetas por cuisine type (american,asian,brithis...)
+<!-- 6.  Implementar busqueda recetas por cuisine type (american,asian,brithis...) -->
 7.  Implementar añadir receta en planner
 8.  Implementar likes de recetas
 9.  Implementar graficos de macros por comida y total del dia
