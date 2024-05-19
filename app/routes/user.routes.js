@@ -1,5 +1,5 @@
-const { authJwt } = require("../middlewares");
 const controller = require("../controllers/user.controller");
+const { verifyToken } = require("../middlewares/authJwt");
 
 module.exports = function(app) {
   app.use(function(req, res, next) {
@@ -10,6 +10,6 @@ module.exports = function(app) {
     next();
   });
 
-  app.get("/api/user/user/likes", [authJwt.verifyToken], controller.getUserLikes);
+  app.get("/api/user/likes", [verifyToken], controller.getUserLikes);
 
 };

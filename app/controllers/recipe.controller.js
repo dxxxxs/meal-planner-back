@@ -58,61 +58,72 @@ exports.getRecipesByCuisineType = async (req, res) => {
     }
 }
 
-// Función para guardar una receta
-exports.saveRecipe = async (req, res) => {
-    try {
-        const recipeData = req.body;
+// Función para verificar si una receta existe en la base de datos
+async function recipeExists(recipeLabel) {
+    let existingRecipe = await Recipe.findOne({ label: recipeLabel });
+    if (existingRecipe) {
+        return existingRecipe;
+    }
+    return false; // Devuelve true si la receta existe, false si no
+}
 
-        const existingRecipe = await Recipe.findOne({ name: recipeData.name });
-        if (existingRecipe) {
-            return res.status(409).json({ message: 'La receta ya existe' });
+// Función para verificar si una receta está en los likes del usuario
+async function isRecipeInLikes(userId, recipeId) {
+    const user = await User.findById(userId);
+    if (!user) {
+        return false;
+    }
+    return user.likes.includes(recipeId);
+}
+
+// Función principal para dar "like" a una receta
+exports.likeRecipe = async (req, res) => {
+    try {
+        const { id, recipe } = req.body;
+
+        // Verificar si la receta existe en la base de datos
+        let existingRecipe = await Recipe.findOne({ label: recipe.label });
+
+        // Si la receta no existe, guárdala en la base de datos
+        if (!existingRecipe) {
+            existingRecipe = new Recipe(recipe);
+            await existingRecipe.save();
         }
 
+        // Verificar si la receta está en los likes del usuario
+        const isLiked = await isRecipeInLikes(id, existingRecipe._id);
 
-        const newRecipe = new Recipe(recipeData);
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
 
-
-        await newRecipe.save();
-
-
-        res.status(201).json({ message: 'Receta guardada exitosamente' });
+        if (isLiked) {
+            user.likes.pull(existingRecipe._id);
+            await user.save();
+            return res.status(200).json({ message: 'Recipe removed from user likes' });
+        } else {
+            user.likes.push(existingRecipe._id);
+            await user.save();
+            return res.status(200).json({ message: 'Recipe added to user likes successfully' });
+        }
     } catch (error) {
-
-        res.status(500).json({ error: 'Ocurrió un error al guardar la receta', details: error.message });
+        res.status(500).json({ error: 'An error occurred while modifying user likes', details: error.message });
     }
 };
 
-exports.likeRecipe = async (req, res) => {
+exports.recipeInLikes = async (req, res) => {
     try {
-        const { username, recipeData } = req.body;
+        const { id, recipeLabel } = req.query; // Utilizamos req.query para obtener los parámetros de la consulta
 
-        let recipe = await Recipe.findOne({ label: recipeData.label });
-        if (!recipe) {
-
-            recipe = new Recipe(recipeData);
-            await recipe.save();
-            recipe = await Recipe.findOne({ label: recipeData.label });
+        const existingRecipe = await recipeExists(recipeLabel);
+        let isLiked = false;
+        if (existingRecipe) {
+            isLiked = await isRecipeInLikes(id, existingRecipe._id);
         }
+        return res.status(200).json({ isLiked });
 
-
-        const user = await User.findById(username);
-        if (!user) {
-            return res.status(404).json({ message: 'Usuario no encontrado' });
-        }
-
-
-        const recipeIndex = user.likes.indexOf(recipe._id);
-        if (recipeIndex !== -1) {
-
-            user.likes.splice(recipeIndex, 1);
-            await user.save();
-            return res.status(200).json({ message: 'Receta eliminada de los likes del usuario' });
-        } else {
-            user.likes.push(recipe._id);
-            await user.save();
-            return res.status(200).json({ message: 'Receta añadida a los likes del usuario exitosamente' });
-        }
     } catch (error) {
-        res.status(500).json({ error: 'Ocurrió un error al intentar modificar los likes del usuario', details: error.message });
+        res.status(500).json({ error: 'An error occurred while checking recipe likes', details: error.message });
     }
 };

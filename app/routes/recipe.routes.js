@@ -1,4 +1,5 @@
 const recetasController = require('../controllers/recipe.controller');
+const { verifyToken } = require("../middlewares/authJwt");
 
 module.exports = function (app) {
     app.use(function (req, res, next) {
@@ -12,6 +13,6 @@ module.exports = function (app) {
     app.get('/api/recipes', recetasController.getRecipes);
     app.get('/api/recipes/bymealtype', recetasController.getRecipesByMealType);
     app.get('/api/recipes/bycuisinetype', recetasController.getRecipesByCuisineType);
-    app.get('/api/recipes/likeRecipe', recetasController.likeRecipe);
-    app.get('/api/recipes/saveRecipe', recetasController.saveRecipe);
+    app.post('/api/recipes/likeRecipe', [verifyToken], recetasController.likeRecipe);
+    app.get('/api/recipes/recipeInLikes', recetasController.recipeInLikes);
 };

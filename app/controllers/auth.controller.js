@@ -53,6 +53,8 @@ exports.signin = async (req, res) => {
       id: user._id,
       username: user.username,
       email: user.email,
+      likes:user.likes,
+      token: token
     });
   } catch (err) {
     res.status(500).send({ message: err });

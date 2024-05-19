@@ -7,7 +7,7 @@ db.mongoose = mongoose;
 
 db.user = require("./user.model");
 db.recipe = require("./recipe.model");
-db.recipe = require("./plan.model");
+// db.recipe = require("./plan.model");
 
 
 module.exports = db;
