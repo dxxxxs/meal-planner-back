@@ -1,4 +1,5 @@
 const axios = require('axios');
+const mongoose = require('mongoose');
 const db = require("../models");
 const User = db.user;
 const Recipe = db.recipe;
@@ -125,5 +126,46 @@ exports.recipeInLikes = async (req, res) => {
 
     } catch (error) {
         res.status(500).json({ error: 'An error occurred while checking recipe likes', details: error.message });
+    }
+};
+
+
+exports.saveRecipe = async (req, res) => {
+    try {
+        const {recipe} = req.body;
+
+        // Verificar si la receta ya existe en la base de datos
+        let existingRecipe = await Recipe.findOne({ label: label });
+
+        // Si la receta no existe, guárdala en la base de datos
+        if (!existingRecipe) {
+            existingRecipe = new Recipe(recipe);
+            await existingRecipe.save();
+            res.status(200).json({ message: 'Recipe saved successfully' });
+        } else {
+            res.status(400).json({ message: 'Recipe already exists' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: 'An error occurred while saving recipe', details: error.message });
+    }
+};
+
+exports.recipeById = async (req, res) => {
+    try {
+        const { recipeId } = req.query;
+
+
+        const recipeIdObjectId = mongoose.Types.ObjectId(recipeId);
+        // Verificar si la receta ya existe en la base de datos
+        let recipe = await Recipe.findOne({ _id: recipeIdObjectId });
+
+        // Si la receta no existe, guárdala en la base de datos
+        if (!recipe) {
+            res.status(400).json({ message: 'Recipe was not found.' });
+        } else {
+            res.status(200).json({ recipe });
+        }
+    } catch (error) {
+        res.status(500).json({ error: 'An error occurred while looking for recipe', details: error.message });
     }
 };

@@ -9,12 +9,7 @@ const User = mongoose.model(
     likes: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: "Recipe"
-    }],
-    planner: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Plan"
     }]
-
   })
 );
 

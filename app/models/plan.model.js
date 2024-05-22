@@ -3,29 +3,63 @@ const mongoose = require("mongoose");
 const Plan = mongoose.model(
     "Plan",
     new mongoose.Schema({
+        userId:{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        },
         date: {
-            type: Date,
+            type: String,
             required: true
         },
         breakfast: [{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Recipe'
+            recipe: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Recipe'
+            },
+            quantity: {
+                type: Number,
+                default: 100
+            }
         }],
         snack: [{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Recipe'
+            recipe: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Recipe'
+            },
+            quantity: {
+                type: Number,
+                default: 100
+            }
         }],
         lunch: [{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Recipe'
+            recipe: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Recipe'
+            },
+            quantity: {
+                type: Number,
+                default: 100
+            }
         }],
         teatime: [{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Recipe'
+            recipe: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Recipe'
+            },
+            quantity: {
+                type: Number,
+                default: 100
+            }
         }],
         dinner: [{
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Recipe'
+            recipe: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Recipe'
+            },
+            quantity: {
+                type: Number,
+                default: 100
+            }
         }]
     })
 );
