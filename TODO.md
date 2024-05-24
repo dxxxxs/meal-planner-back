@@ -10,9 +10,8 @@ DISEÑO
 
 FUNCIONALIDADES
 <!-- 6.  Implementar busqueda recetas por cuisine type (american,asian,brithis...) -->
-7.  Implementar añadir receta en planner
+<!-- 7.  Implementar añadir receta en planner -->
 <!-- 8.  Implementar likes de recetas -->
-9.  Implementar graficos de macros por comida y total del dia
 <!-- 10. Mostrar likes en el profile -->
 12. Redirect login a recipes
 13. Proteger rutas para NO USUARIOS (planner, profile)
