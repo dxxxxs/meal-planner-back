@@ -25,21 +25,67 @@ exports.getRecipes = async (req, res) => {
 exports.getRecipesByMealType = async (req, res) => {
     try {
         const params = req.query;
-        const response = await axios.get('https://api.edamam.com/api/recipes/v2', {
-            params: {
-                type: "public",
-                app_id: "cb12cff7",
-                app_key: "348cbb8aa7b403805e49c3747071fbb3",
-                random: true,
-                mealType: params.mealType
-            }
-        });
+
+        // Prepare query parameters
+        let queryParams = {
+            type: "public",
+            app_id: "cb12cff7",
+            app_key: "348cbb8aa7b403805e49c3747071fbb3",
+            random: true
+        };
+
+        // Check if mealType is an array and append accordingly
+        if (Array.isArray(params.mealType)) {
+            params.mealType.forEach(mealType => {
+                queryParams = { ...queryParams, mealType: mealType };
+            });
+        } else if (params.mealType) {
+            queryParams['mealType'] = params.mealType;
+        }
+
+        // Make the API request
+        const response = await axios.get('https://api.edamam.com/api/recipes/v2', { params: queryParams });
+
+        // Send back the API response
         res.json(response.data);
     } catch (error) {
         console.error('Error al llamar a la API de Edamam:', error);
         res.status(500).json({ error: 'Error al obtener datos de la API de Edamam' });
     }
-}
+};
+exports.getRecipesByText = async (req, res) => {
+    try {
+        const params = req.query;
+
+        // Prepare query parameters
+        let queryParams = {
+            type: "public",
+            app_id: "cb12cff7",
+            app_key: "348cbb8aa7b403805e49c3747071fbb3",
+            random: true,
+            q: params.q
+        };
+
+        // Check if mealType is an array and append accordingly
+        if (Array.isArray(params.mealType)) {
+            params.mealType.forEach(mealType => {
+                queryParams = { ...queryParams, mealType: mealType };
+            });
+        } else if (params.mealType) {
+            queryParams['mealType'] = params.mealType;
+        }
+
+        // Make the API request
+        const response = await axios.get('https://api.edamam.com/api/recipes/v2', { params: queryParams });
+
+        // Send back the API response
+        res.json(response.data);
+    } catch (error) {
+        console.error('Error al llamar a la API de Edamam:', error);
+        res.status(500).json({ error: 'Error al obtener datos de la API de Edamam' });
+    }
+};
+
 exports.getRecipesByCuisineType = async (req, res) => {
     try {
         const params = req.query;
@@ -132,18 +178,17 @@ exports.recipeInLikes = async (req, res) => {
 
 exports.saveRecipe = async (req, res) => {
     try {
-        const {recipe} = req.body;
-
+        const { recipe } = req.body;
         // Verificar si la receta ya existe en la base de datos
-        let existingRecipe = await Recipe.findOne({ label: label });
+        let existingRecipe = await Recipe.findOne({ label: recipe.label });
 
         // Si la receta no existe, guárdala en la base de datos
         if (!existingRecipe) {
             existingRecipe = new Recipe(recipe);
             await existingRecipe.save();
-            res.status(200).json({ message: 'Recipe saved successfully' });
+            res.status(200).json({ message: 'Recipe saved successfully', _id: existingRecipe._id });
         } else {
-            res.status(400).json({ message: 'Recipe already exists' });
+            res.status(200).json({ message: 'Recipe already exists', _id: existingRecipe._id });
         }
     } catch (error) {
         res.status(500).json({ error: 'An error occurred while saving recipe', details: error.message });

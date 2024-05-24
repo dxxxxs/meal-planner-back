@@ -12,10 +12,16 @@ exports.getPlanner = async (req, res) => {
         if (!userId || !date) {
             return res.status(400).json({ error: 'userId and date are required query parameters' });
         }
+
         const userIdObjectId = mongoose.Types.ObjectId(userId);
-        const plan = await Plan.findOne({ userId: userIdObjectId, date: date });
+        
+        // Buscar el plan para el usuario y la fecha especificados
+        let plan = await Plan.findOne({ userId: userIdObjectId, date: date });
+
+        // Si no se encuentra un plan, crear uno nuevo
         if (!plan) {
-            return res.status(404).json({ message: 'Plan not found for the specified user and date' });
+            plan = new Plan({ userId: userIdObjectId, date: date });
+            await plan.save();
         }
 
         res.status(200).json({ plan });

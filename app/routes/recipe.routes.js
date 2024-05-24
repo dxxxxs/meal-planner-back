@@ -12,9 +12,10 @@ module.exports = function (app) {
 
     app.get('/api/recipes', recetasController.getRecipes);
     app.get('/api/recipes/bymealtype', recetasController.getRecipesByMealType);
+    app.get('/api/recipes/bytext', recetasController.getRecipesByText);
     app.get('/api/recipes/bycuisinetype', recetasController.getRecipesByCuisineType);
     app.post('/api/recipes/likeRecipe', [verifyToken], recetasController.likeRecipe);
     app.get('/api/recipes/recipeInLikes', recetasController.recipeInLikes);
-    app.get('/api/recipes/saveRecipe', recetasController.saveRecipe);
+    app.post('/api/recipes/saveRecipe', recetasController.saveRecipe);
     app.get('/api/recipes/recipeById', recetasController.recipeById);
 };
