@@ -1,9 +1,11 @@
+require("dotenv-flow").config();
 const express = require("express");
 const cors = require("cors");
 const cookieSession = require("cookie-session");
 
 const db = require("./app/models");
 const dbConfig = require("./app/config/db.config");
+const serverConfig = require("./app/config/server.config");
 
 const app = express();
 
@@ -11,7 +13,7 @@ const app = express();
 app.use(
   cors({
     credentials: true,
-    origin: ["http://localhost:4200"],
+    origin: serverConfig.getCorsOrigins(),
   })
 );
 
@@ -25,7 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
   cookieSession({
     name: "MealPlanner",
-    keys: ["COOKIE_SECRET"], // should use as secret environment variable
+    keys: [serverConfig.COOKIE_SECRET], // should use as secret environment variable
     httpOnly: true
   })
 );
@@ -38,7 +40,7 @@ require('./app/routes/recipe.routes')(app);
 require('./app/routes/plan.routes')(app);
 
 db.mongoose
-  .connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`, {
+  .connect(dbConfig.URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
@@ -52,7 +54,6 @@ db.mongoose
 
 
 // Puerto
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
+app.listen(serverConfig.API_PORT, () => {
+  console.log(`Server is running on port ${serverConfig.API_PORT}.`);
 });

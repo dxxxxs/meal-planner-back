@@ -1,13 +1,14 @@
 const axios = require('axios');
+const edamamConfig = require("../config/edamam.config");
 
 exports.getFoodAutocomplete = async (req,res) => {
     try {
         const params = req.query;
-        const response = await axios.get('https://api.edamam.com/api/recipes/v2', {
+        const response = await axios.get(`${edamamConfig.BASE_URL}/recipes/v2`, {
             params: {
                 type: "public",
-                app_id: "cb12cff7",
-                app_key: "348cbb8aa7b403805e49c3747071fbb3",
+                app_id: edamamConfig.APP_ID,
+                app_key: edamamConfig.APP_KEY,
                 diet: params.diet || 'balanced',
                 random: true,
                 mealType: params.mealType

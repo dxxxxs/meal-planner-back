@@ -1,3 +1,3 @@
 module.exports = {
-  secret: "Zg6cPhiKCF$Bb4QWdQB2"
+  secret: process.env.AUTH_SECRET || "my-auth-secret"
 };
