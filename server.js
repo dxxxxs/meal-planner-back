@@ -38,6 +38,7 @@ require("./app/routes/auth.routes")(app);
 require("./app/routes/user.routes")(app);
 require('./app/routes/recipe.routes')(app);
 require('./app/routes/plan.routes')(app);
+require('./app/routes/healthcheck.routes')(app);
 
 db.mongoose
   .connect(dbConfig.URL, {
