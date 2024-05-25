@@ -3,14 +3,15 @@ const mongoose = require('mongoose');
 const db = require("../models");
 const User = db.user;
 const Recipe = db.recipe;
+const edamamConfig = require("../config/edamam.config");
 
 exports.getRecipes = async (req, res) => {
     try {
-        const response = await axios.get('https://api.edamam.com/api/recipes/v2', {
+        const response = await axios.get(`${edamamConfig.BASE_URL}/recipes/v2`, {
             params: {
                 type: "public",
-                app_id: "cb12cff7",
-                app_key: "348cbb8aa7b403805e49c3747071fbb3",
+                app_id: edamamConfig.APP_ID,
+                app_key: edamamConfig.APP_KEY,
                 diet: 'balanced',
                 random: true,
             }
@@ -29,8 +30,8 @@ exports.getRecipesByMealType = async (req, res) => {
         // Prepare query parameters
         let queryParams = {
             type: "public",
-            app_id: "cb12cff7",
-            app_key: "348cbb8aa7b403805e49c3747071fbb3",
+            app_id: edamamConfig.APP_ID,
+            app_key: edamamConfig.APP_KEY,
             random: true
         };
 
@@ -44,7 +45,7 @@ exports.getRecipesByMealType = async (req, res) => {
         }
 
         // Make the API request
-        const response = await axios.get('https://api.edamam.com/api/recipes/v2', { params: queryParams });
+        const response = await axios.get(`${edamamConfig.BASE_URL}/recipes/v2`, { params: queryParams });
 
         // Send back the API response
         res.json(response.data);
@@ -60,8 +61,8 @@ exports.getRecipesByText = async (req, res) => {
         // Prepare query parameters
         let queryParams = {
             type: "public",
-            app_id: "cb12cff7",
-            app_key: "348cbb8aa7b403805e49c3747071fbb3",
+            app_id: edamamConfig.APP_ID,
+            app_key: edamamConfig.APP_KEY,
             random: true,
             q: params.q
         };
@@ -76,7 +77,7 @@ exports.getRecipesByText = async (req, res) => {
         }
 
         // Make the API request
-        const response = await axios.get('https://api.edamam.com/api/recipes/v2', { params: queryParams });
+        const response = await axios.get(`${edamamConfig.BASE_URL}/recipes/v2`, { params: queryParams });
 
         // Send back the API response
         res.json(response.data);
@@ -89,11 +90,11 @@ exports.getRecipesByText = async (req, res) => {
 exports.getRecipesByCuisineType = async (req, res) => {
     try {
         const params = req.query;
-        const response = await axios.get('https://api.edamam.com/api/recipes/v2', {
+        const response = await axios.get(`${edamamConfig.BASE_URL}/recipes/v2`, {
             params: {
                 type: "public",
-                app_id: "cb12cff7",
-                app_key: "348cbb8aa7b403805e49c3747071fbb3",
+                app_id: edamamConfig.APP_ID,
+                app_key: edamamConfig.APP_KEY,
                 random: true,
                 cuisineType: params.cuisineType
             }
